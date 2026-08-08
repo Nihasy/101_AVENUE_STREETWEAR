@@ -18,8 +18,28 @@
   var K_DIRTY = "swops.sync.dirty";
 
   var cfg = window.SWOPS_SUPABASE || {};
-  var configured = !!(cfg.url && cfg.key &&
+
+  /* Garde-fou : la clé "service_role" contourne toutes les protections de la
+     base. Ce fichier étant public, l'y mettre exposerait la base entière.
+     On refuse de démarrer plutôt que de laisser passer l'erreur. */
+  function isServiceRole(k) {
+    try {
+      var p = String(k).split(".");
+      if (p.length !== 3) return false;                       // pas un JWT
+      var b = p[1].replace(/-/g, "+").replace(/_/g, "/");
+      while (b.length % 4) b += "=";
+      return JSON.parse(atob(b)).role === "service_role";
+    } catch (e) { return false; }
+  }
+
+  var dangerous = isServiceRole(cfg.key);
+  var configured = !!(cfg.url && cfg.key && !dangerous &&
     cfg.url.indexOf("TON-PROJET") < 0 && cfg.key.indexOf("TA-CLE-ANON") < 0);
+
+  if (dangerous && window.console) {
+    console.error("[sync] Clé service_role détectée dans config.js. Synchro désactivée. " +
+      "Utilise la clé anon/public, et révoque cette clé dans Supabase.");
+  }
 
   var applying = false;      // vrai pendant qu'on écrit des données distantes
   var busy = false;          // une requête est en cours
@@ -373,6 +393,7 @@
   function refresh() {
     if (!els.box) return;
     els.code.textContent = code() || "—";
+    if (dangerous) { status("clé invalide — voir console", "err"); return; }
     if (!configured) {
       status("non configurée", "");
       return;
