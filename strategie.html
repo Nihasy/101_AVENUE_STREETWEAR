@@ -25,7 +25,8 @@
     border:1.5px solid var(--line2);padding:9px 6px;white-space:nowrap}
   .nav a:hover{border-color:var(--ink);color:var(--ink)}
   .nav a.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
-  @media (max-width:430px){.nav{gap:4px}.nav a{font-size:9px;letter-spacing:.02em;padding:8px 2px}}
+  @media (max-width:430px){.nav{gap:4px}
+    .nav a{font-size:10.5px;letter-spacing:.03em;padding:7px 4px;white-space:normal;line-height:1.25}}
 
   header{border:2px solid var(--ink);background:var(--card);padding:18px 18px 16px}
   .eyebrow{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
@@ -141,6 +142,34 @@
   footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line2)}
   footer a:hover{color:var(--stamp);border-color:var(--stamp)}
   footer .acts{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+
+  /* --- Téléphone : le tableau de bord devient une carte par ligne ---------
+     Même contenu qu'à l'écran, mais sans défilement latéral : chaque cellule
+     porte son intitulé via data-l, affiché en ::before. */
+  @media (max-width:600px){
+    .tscroll{overflow:visible;margin:0;padding:0}
+    table{min-width:0}
+    thead{display:none}
+    tbody,tr,td{display:block;width:100%}
+    tr{border:1.5px solid var(--ink);margin-bottom:9px;padding:9px 11px}
+    tr.ok{background:rgba(46,122,76,.11)}
+    tr.bad{background:rgba(214,55,26,.11)}
+    tr.tot{background:rgba(27,23,20,.05);border-width:2px}
+    tr.ok td,tr.bad td,tr.tot td{background:none}
+    td{border-top:none;padding:3px 0;display:flex;align-items:center;justify-content:space-between;
+      gap:10px;text-align:right;white-space:normal;font-size:13.5px}
+    td::before{content:attr(data-l);font-family:"Space Mono",monospace;font-size:9.5px;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;flex:none}
+    td.l{display:block;min-width:0;margin-bottom:7px;font-size:14px}
+    td.l::before{content:none}
+    td.l input{width:100%}
+    td input{flex:0 0 46%;max-width:46%}
+    td.act{justify-content:flex-end;padding-top:6px}
+    td.act::before{content:none}
+    td.act:empty{display:none}
+    .scale{flex-wrap:wrap}
+    .scale div{flex:1 1 46%;font-size:9.5px;padding:7px 4px}
+  }
 </style>
 </head>
 <body>
@@ -495,21 +524,24 @@ function rowsRender(){
     if(cpc!==null&&spent>0)cls=cpc<2000?"ok":(cpc>3000?"bad":"");
     h+='<tr class="'+cls+'">'+
       '<td class="l"><input class="lab" data-i="'+i+'" data-f="label" value="'+esc(r.label)+'"></td>'+
-      '<td><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="spent" value="'+spent+'"></td>'+
-      '<td><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="conv" value="'+conv+'"></td>'+
-      '<td><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="sales" value="'+sales+'"></td>'+
-      '<td>'+(cpc===null?"—":fmt(cpc))+'</td>'+
-      '<td>'+(cpa===null?"—":fmt(cpa))+'</td>'+
-      '<td>'+(clo===null?"—":Math.round(clo)+"%")+'</td>'+
-      '<td><button class="del" data-del="'+i+'" title="supprimer">×</button></td></tr>';
+      '<td data-l="Dépensé"><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="spent" value="'+spent+'"></td>'+
+      '<td data-l="Conversations"><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="conv" value="'+conv+'"></td>'+
+      '<td data-l="Ventes"><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="sales" value="'+sales+'"></td>'+
+      '<td data-l="Coût/conv">'+(cpc===null?"—":fmt(cpc))+'</td>'+
+      '<td data-l="CPA réel">'+(cpa===null?"—":fmt(cpa))+'</td>'+
+      '<td data-l="Closing">'+(clo===null?"—":Math.round(clo)+"%")+'</td>'+
+      '<td class="act"><button class="del" data-del="'+i+'" title="supprimer">×</button></td></tr>';
   });
 
   var TC=tC?tS/tC:null, TA=tV?tS/tV:null, TL=tC?tV/tC*100:null;
   h+='<tr class="tot"><td class="l">TOTAL</td>'+
-    '<td>'+fmt(tS)+'</td><td>'+tC+'</td><td>'+tV+'</td>'+
-    '<td>'+(TC===null?"—":fmt(TC))+'</td>'+
-    '<td>'+(TA===null?"—":fmt(TA))+'</td>'+
-    '<td>'+(TL===null?"—":Math.round(TL)+"%")+'</td><td></td></tr>';
+    '<td data-l="Dépensé">'+fmt(tS)+'</td>'+
+    '<td data-l="Conversations">'+tC+'</td>'+
+    '<td data-l="Ventes">'+tV+'</td>'+
+    '<td data-l="Coût/conv">'+(TC===null?"—":fmt(TC))+'</td>'+
+    '<td data-l="CPA réel">'+(TA===null?"—":fmt(TA))+'</td>'+
+    '<td data-l="Closing">'+(TL===null?"—":Math.round(TL)+"%")+'</td>'+
+    '<td class="act"></td></tr>';
   tb.innerHTML=h;
 
   return {spent:tS,conv:tC,sales:tV,cpa:TA};
