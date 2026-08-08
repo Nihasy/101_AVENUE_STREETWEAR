@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Feuille de route — Streetwear Ops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9E3D6; --card:#F4F0E7; --ink:#1B1714; --muted:#6E6658;
+    --stamp:#D6371A; --green:#2E7A4C; --line:rgba(27,23,20,.14); --line2:rgba(27,23,20,.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;line-height:1.55;
+    background-image:radial-gradient(rgba(27,23,20,.035) 1px,transparent 1px);background-size:22px 22px;}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:"Space Mono",monospace}
+
+  header{border:2px solid var(--ink);background:var(--card);padding:22px 20px 20px;position:relative}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  h1{font-weight:900;font-size:clamp(30px,8vw,52px);line-height:.98;letter-spacing:-.02em;margin:8px 0 4px}
+  h1 .accent{color:var(--stamp)}
+  .sub{font-size:14px;color:var(--muted);max-width:52ch}
+  .law{margin-top:16px;border-top:1px dashed var(--line2);padding-top:12px;display:flex;flex-wrap:wrap;gap:6px 14px;
+    font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
+  .law b{color:var(--stamp);font-weight:700}
+
+  .meter{display:flex;align-items:center;gap:14px;margin:14px 0 26px;border:1.5px solid var(--ink);background:var(--card);padding:12px 16px}
+  .meter .big{font-weight:900;font-size:26px;line-height:1;white-space:nowrap}
+  .meter .lbl{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .bar{flex:1;height:12px;background:rgba(27,23,20,.1);position:relative;overflow:hidden}
+  .bar>i{display:block;height:100%;width:0;background:var(--stamp);transition:width .4s ease}
+
+  .phase{border:1.5px solid var(--ink);background:var(--card);margin-bottom:18px;position:relative}
+  .phase .accentbar{height:6px;background:var(--stamp)}
+  .phase[data-done="1"] .accentbar{background:var(--green)}
+  .ptop{display:flex;gap:14px;padding:16px 18px 4px}
+  .num{font-weight:900;font-size:clamp(36px,11vw,64px);line-height:.8;color:var(--ink);opacity:.16;letter-spacing:-.04em}
+  .phead{flex:1;min-width:0}
+  .ptitle{font-weight:700;font-size:19px;letter-spacing:-.01em;line-height:1.1}
+  .dates{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted);margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+  .jbadge{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.05em;
+    border:1.5px solid var(--ink);padding:2px 8px;white-space:nowrap;text-transform:uppercase}
+  .jbadge.soon{background:var(--stamp);color:#fff;border-color:var(--stamp)}
+  .jbadge.done{background:var(--green);color:#fff;border-color:var(--green)}
+  .jbadge.later{color:var(--muted)}
+  .obj{padding:6px 18px 2px;font-size:14px;color:var(--ink)}
+  .obj span{color:var(--muted)}
+  ul{list-style:none;padding:10px 18px 4px}
+  li{display:flex;gap:11px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);cursor:pointer}
+  li:first-child{border-top:none}
+  li input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;border:1.5px solid var(--ink);
+    background:var(--card);margin-top:1px;cursor:pointer;position:relative}
+  li input:checked{background:var(--stamp);border-color:var(--stamp)}
+  li input:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  li span{font-size:14.5px;transition:color .2s}
+  li input:checked + span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line2)}
+  .gate{margin:6px 18px 18px;border-top:1px dashed var(--line2);padding-top:11px;
+    font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.02em;color:var(--ink);display:flex;gap:8px;align-items:flex-start}
+  .gate b{color:var(--stamp);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.08em}
+  .gate.rule b{color:var(--green)}
+
+  footer{margin-top:34px;text-align:center;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);letter-spacing:.05em}
+  .reset{margin-top:14px;font-family:"Space Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+    background:none;border:1px solid var(--line2);color:var(--muted);padding:7px 14px;cursor:pointer}
+  .reset:hover{border-color:var(--ink);color:var(--ink)}
+  .nav{display:flex;gap:6px;margin-bottom:14px}
+  .nav a{flex:1;text-align:center;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);
+    border:1.5px solid var(--line2);padding:9px 6px;white-space:nowrap}
+  .nav a:hover{border-color:var(--ink);color:var(--ink)}
+  .nav a.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+  @media (max-width:430px){.nav{gap:4px}.nav a{font-size:9px;letter-spacing:.02em;padding:8px 2px}}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line2)}
+  footer a:hover{color:var(--stamp);border-color:var(--stamp)}
+  @media (max-width:520px){ .num{font-size:44px} .ptop{padding:14px 14px 4px;gap:10px} ul,.obj{padding-left:14px;padding-right:14px} .gate{margin-left:14px;margin-right:14px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav">
+    <a href="roadmap.html" class="on">Feuille de route</a>
+    <a href="carnet.html">Carnet de stock</a>
+    <a href="strategie.html">Stratégie</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">Ops · Antananarivo · MàJ 07 août 2026</div>
+    <h1>Feuille de route<br><span class="accent">streetwear</span></h1>
+    <p class="sub">Du test des 100 t-shirts jusqu'au volume. On prouve le débit avant d'acheter gros.</p>
+    <div class="law">
+      <span>Loi du jeu —</span>
+      <span><b>vélocité</b> &gt; marge</span>
+      <span><b>zéro</b> nom de marque</span>
+      <span>une <b>gate</b> = un feu vert</span>
+    </div>
+  </header>
+
+  <div class="meter">
+    <div class="big"><span id="done">0</span><span style="opacity:.35">/<span id="total">0</span></span></div>
+    <div style="flex:1">
+      <div class="lbl">tâches complétées</div>
+      <div class="bar"><i id="fill"></i></div>
+    </div>
+  </div>
+
+  <div class="phase" id="p0" data-deadline="2026-08-08">
+    <div class="accentbar"></div>
+    <div class="ptop">
+      <div class="num">00</div>
+      <div class="phead">
+        <div class="ptitle">Préparation — être prêt à vendre propre</div>
+        <div class="dates"><span>maintenant → sam. 8 août</span><span class="jbadge" data-j></span></div>
+      </div>
+    </div>
+    <div class="obj">Objectif : <span>tout en place avant le live de dimanche.</span></div>
+    <ul>
+      <li><input type="checkbox"><span>Trier les 100 tees : TOP vs MID, par taille (inventaire écrit)</span></li>
+      <li><input type="checkbox"><span>Photos réelles à toi (2-3 modèles portés, lumière du jour)</span></li>
+      <li><input type="checkbox"><span>Deal animateur à l'écrit (50k fixe + 15% du CA)</span></li>
+      <li><input type="checkbox"><span>Post d'annonce + Reel teasing publiés (boost léger)</span></li>
+      <li><input type="checkbox"><span>Logistique prête : prise de commandes + livraison</span></li>
+    </ul>
+    <div class="gate"><b>Gate</b><span>Stock trié + animateur confirmé + posts en ligne.</span></div>
+  </div>
+
+  <div class="phase" id="p1" data-deadline="2026-09-06">
+    <div class="accentbar"></div>
+    <div class="ptop">
+      <div class="num">01</div>
+      <div class="phead">
+        <div class="ptitle">Test &amp; validation — écouler les 100</div>
+        <div class="dates"><span>dim. 9 août → dim. 6 sept.</span><span class="jbadge" data-j></span></div>
+      </div>
+    </div>
+    <div class="obj">Objectif : <span>vendre les 100 tees, récupérer ~1,25M + marge, en 2-4 semaines.</span></div>
+    <ul>
+      <li><input type="checkbox"><span>Live Facebook dim. 9 août 20h sur ATO (+ partage groupes Tana)</span></li>
+      <li><input type="checkbox"><span>Relances Messenger sur chaque commentaire</span></li>
+      <li><input type="checkbox"><span>Posts produit pour les retardataires</span></li>
+      <li><input type="checkbox"><span>TikTok Live avec l'animateur (audience froide) si FB convertit</span></li>
+      <li><input type="checkbox"><span>Mesurer : conversion, TOP vs MID, tailles, prix qui tient</span></li>
+    </ul>
+    <div class="gate"><b>Gate</b><span>100 vendus en ≤4 sem. ET marge nette positive claire.</span></div>
+  </div>
+
+  <div class="phase" id="p2" data-deadline="2026-09-21">
+    <div class="accentbar"></div>
+    <div class="ptop">
+      <div class="num">02</div>
+      <div class="phead">
+        <div class="ptitle">Structuration — machine répétable</div>
+        <div class="dates"><span>18 août → 21 sept.</span><span class="jbadge" data-j></span></div>
+      </div>
+    </div>
+    <div class="obj">Objectif : <span>transformer le coup unique en canal qui tourne seul.</span></div>
+    <ul>
+      <li><input type="checkbox"><span>Créer la page streetwear dédiée (nom + bio + cover)</span></li>
+      <li><input type="checkbox"><span>Migrer le textile dessus, ATO reste sur l'énergie</span></li>
+      <li><input type="checkbox"><span>Cross-promo ATO → nouvelle page au lancement</span></li>
+      <li><input type="checkbox"><span>Routine de lives (rythme fixe, 1-2 / semaine)</span></li>
+      <li><input type="checkbox"><span>Documenter ce qui vend (prix, modèles, angles gagnants)</span></li>
+    </ul>
+    <div class="gate"><b>Gate</b><span>Page lancée + 2e/3e live confirmant le débit.</span></div>
+  </div>
+
+  <div class="phase" id="p3" data-deadline="2026-09-08">
+    <div class="accentbar"></div>
+    <div class="ptop">
+      <div class="num">03</div>
+      <div class="phead">
+        <div class="ptitle">Scaling &amp; décision volume</div>
+        <div class="dates"><span>à partir du 8 sept.</span><span class="jbadge" data-j></span></div>
+      </div>
+    </div>
+    <div class="obj">Objectif : <span>décider l'achat volume avec des données, jamais par FOMO.</span></div>
+    <ul>
+      <li><input type="checkbox"><span>Calculer ton débit réel : combien de tees / semaine</span></li>
+      <li><input type="checkbox"><span>Ouvrir le demi-gros : lots à des revendeurs = cash rapide</span></li>
+      <li><input type="checkbox"><span>Négocier le fournisseur en position de force</span></li>
+      <li><input type="checkbox"><span>Acheter du volume seulement si : débit × cash × délai OK</span></li>
+    </ul>
+    <div class="gate rule"><b>Règle d'or</b><span>Jamais plus de stock que ce que tu écoules en X semaines.</span></div>
+  </div>
+
+  <div class="phase" id="p4" data-deadline="2026-09-15">
+    <div class="accentbar"></div>
+    <div class="ptop">
+      <div class="num">04</div>
+      <div class="phead">
+        <div class="ptitle">Volume — monter sans stock dormant</div>
+        <div class="dates"><span>conditionnel · décision ~15 sept.</span><span class="jbadge" data-j></span></div>
+      </div>
+    </div>
+    <div class="obj">Objectif : <span>passer à l'échelle une fois le modèle prouvé, par paliers.</span></div>
+    <ul>
+      <li><input type="checkbox"><span>Achat progressif (par paliers, jamais une tonne d'un coup)</span></li>
+      <li><input type="checkbox"><span>Mix retail (marge max) + demi-gros (vélocité)</span></li>
+      <li><input type="checkbox"><span>Distribution province via coopératives</span></li>
+      <li><input type="checkbox"><span>Réinvestir la marge, jamais le capital de survie</span></li>
+    </ul>
+    <div class="gate rule"><b>Cap</b><span>Devenir le mec qui SAIT écouler, pas celui qui stocke.</span></div>
+  </div>
+
+  <footer>
+    Streetwear Ops · feuille de route personnelle · progression enregistrée sur cet appareil
+    <br><a href="index.html">accueil</a>
+    <br><button class="reset" onclick="resetAll()">réinitialiser</button>
+  </footer>
+
+</div>
+
+<script>
+  var KEY="swops.roadmap.v1";
+  var boxes=[].slice.call(document.querySelectorAll('li input'));
+  boxes.forEach(function(b,i){b.dataset.k="t"+i;});
+
+  function load(){
+    var s={};try{s=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){}
+    boxes.forEach(function(b){if(s[b.dataset.k])b.checked=true;});
+  }
+  function save(){
+    var s={};boxes.forEach(function(b){if(b.checked)s[b.dataset.k]=1;});
+    try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}
+  }
+  function refresh(){
+    var done=boxes.filter(function(b){return b.checked;}).length;
+    document.getElementById('done').textContent=done;
+    document.getElementById('total').textContent=boxes.length;
+    document.getElementById('fill').style.width=(boxes.length? Math.round(done/boxes.length*100):0)+'%';
+    document.querySelectorAll('.phase').forEach(function(p){
+      var bs=[].slice.call(p.querySelectorAll('li input'));
+      p.dataset.done=(bs.length && bs.every(function(x){return x.checked;}))?"1":"0";
+    });
+  }
+  boxes.forEach(function(b){b.addEventListener('change',function(){save();refresh();});});
+  document.querySelectorAll('li').forEach(function(li){
+    li.addEventListener('click',function(e){if(e.target.tagName!=='INPUT'){var c=li.querySelector('input');c.checked=!c.checked;c.dispatchEvent(new Event('change'));}});
+  });
+
+  function dayBadges(){
+    var today=new Date();today.setHours(0,0,0,0);
+    document.querySelectorAll('.phase').forEach(function(p){
+      var el=p.querySelector('[data-j]');if(!el)return;
+      var d=new Date(p.dataset.deadline+"T00:00:00");
+      var diff=Math.round((d-today)/86400000);
+      var done=p.dataset.done==="1";
+      if(done){el.textContent="fait";el.className="jbadge done";}
+      else if(diff<0){el.textContent="échu +"+(-diff)+"j";el.className="jbadge soon";}
+      else if(diff===0){el.textContent="aujourd'hui";el.className="jbadge soon";}
+      else if(diff<=7){el.textContent="J-"+diff;el.className="jbadge soon";}
+      else{el.textContent="J-"+diff;el.className="jbadge later";}
+    });
+  }
+  window.resetAll=function(){if(confirm("Décocher toutes les tâches ?")){try{localStorage.removeItem(KEY);}catch(e){}boxes.forEach(function(b){b.checked=false;});refresh();dayBadges();}};
+
+  load();refresh();dayBadges();
+</script>
+</body>
+</html>

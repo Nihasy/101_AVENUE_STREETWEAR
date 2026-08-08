@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E9E3D6">
+<title>Streetwear Ops — Antananarivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#E9E3D6;--card:#F4F0E7;--ink:#1B1714;--muted:#6E6658;--stamp:#D6371A;--green:#2E7A4C;
+    --line:rgba(27,23,20,.14);--line2:rgba(27,23,20,.28)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;line-height:1.55;
+    background-image:radial-gradient(rgba(27,23,20,.035) 1px,transparent 1px);background-size:22px 22px}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
+
+  header{border:2px solid var(--ink);background:var(--card);padding:22px 20px 20px}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  h1{font-weight:900;font-size:clamp(30px,8vw,52px);line-height:.98;letter-spacing:-.02em;margin:8px 0 4px}
+  h1 .accent{color:var(--stamp)}
+  .sub{font-size:14px;color:var(--muted);max-width:52ch}
+  .law{margin-top:16px;border-top:1px dashed var(--line2);padding-top:12px;display:flex;flex-wrap:wrap;gap:6px 14px;
+    font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
+  .law b{color:var(--stamp);font-weight:700}
+
+  .tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:22px}
+  a.tool{display:block;border:1.5px solid var(--ink);background:var(--card);text-decoration:none;color:var(--ink);
+    transition:transform .15s ease,box-shadow .15s ease}
+  a.tool:hover,a.tool:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink);outline:none}
+  a.tool .accentbar{height:6px;background:var(--stamp)}
+  a.tool.b .accentbar{background:var(--green)}
+  a.tool.c .accentbar{background:var(--ink)}
+  .tbody{padding:15px 16px 16px}
+  .tnum{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted)}
+  .tname{font-weight:900;font-size:22px;line-height:1.05;letter-spacing:-.01em;margin:5px 0 6px}
+  .tdesc{font-size:13.5px;color:var(--muted)}
+  .tstat{margin-top:11px;border-top:1px solid var(--line);padding-top:9px;
+    font-family:"Space Mono",monospace;font-size:12px;font-weight:700;color:var(--ink)}
+  .tstat.empty{color:var(--muted);font-weight:400}
+  .go{margin-top:10px;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--stamp)}
+
+  footer{margin-top:30px;text-align:center;font-family:"Space Mono",monospace;font-size:11px;
+    color:var(--muted);letter-spacing:.05em;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Ops · Antananarivo</div>
+    <h1>Streetwear<br><span class="accent">Ops</span></h1>
+    <p class="sub">Deux outils, une seule discipline : prouver le débit avant d'acheter gros.</p>
+    <div class="law">
+      <span>Loi du jeu —</span>
+      <span><b>vélocité</b> &gt; marge</span>
+      <span><b>zéro</b> nom de marque</span>
+      <span>une <b>gate</b> = un feu vert</span>
+    </div>
+  </header>
+
+  <div class="tools">
+    <a class="tool" href="carnet.html">
+      <div class="accentbar"></div>
+      <div class="tbody">
+        <div class="tnum">01 · Terrain</div>
+        <div class="tname">Carnet de stock</div>
+        <div class="tdesc">Saisis ton stock, marque les ventes en direct, lis tes vrais chiffres.</div>
+        <div class="tstat empty" id="s-carnet">—</div>
+        <div class="go">Ouvrir →</div>
+      </div>
+    </a>
+
+    <a class="tool b" href="roadmap.html">
+      <div class="accentbar"></div>
+      <div class="tbody">
+        <div class="tnum">02 · Cap</div>
+        <div class="tname">Feuille de route</div>
+        <div class="tdesc">Du test des 100 t-shirts jusqu'au volume, phase par phase avec ses gates.</div>
+        <div class="tstat empty" id="s-roadmap">—</div>
+        <div class="go">Ouvrir →</div>
+      </div>
+    </a>
+
+    <a class="tool c" href="strategie.html">
+      <div class="accentbar"></div>
+      <div class="tbody">
+        <div class="tnum">03 · Budget</div>
+        <div class="tname">Stratégie de lancement</div>
+        <div class="tdesc">Plafond de CPA, 4 vagues de pub, tableau de bord et verdict chiffré.</div>
+        <div class="tstat empty" id="s-strat">—</div>
+        <div class="go">Ouvrir →</div>
+      </div>
+    </a>
+  </div>
+
+  <footer>
+    Données enregistrées sur cet appareil · pense à exporter régulièrement
+  </footer>
+
+</div>
+
+<script>
+  function fmt(n){return Math.round(n).toLocaleString('fr-FR').replace(/\u202f|\u00a0/g,' ')}
+  function read(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+  function set(el,txt,filled){
+    var e=document.getElementById(el);
+    e.textContent=txt;e.className="tstat"+(filled?"":" empty");
+  }
+
+  var d=read("swops.stock.v2");
+  if(d && d.length){
+    var sold=d.filter(function(x){return x.sold});
+    var ca=sold.reduce(function(s,x){return s+(x.soldPrice||0)},0);
+    set("s-carnet",(d.length-sold.length)+" en stock · "+sold.length+" vendus · "+fmt(ca)+" Ar",1);
+  } else { set("s-carnet","aucun stock saisi",0); }
+
+  var r=read("swops.roadmap.v1");
+  var n=r?Object.keys(r).length:0;
+  set("s-roadmap", n?n+" tâche"+(n>1?"s":"")+" cochée"+(n>1?"s":""):"aucune tâche cochée", n?1:0);
+
+  var st=read("swops.strategie.v1");
+  var rows=(st&&Object.prototype.toString.call(st.rows)==="[object Array]")?st.rows:[];
+  var sp=0,ve=0;
+  rows.forEach(function(x){sp+=x.spent||0;ve+=x.sales||0});
+  if(sp){
+    set("s-strat", fmt(sp)+" Ar dépensés · "+(ve?"CPA "+fmt(sp/ve)+" Ar":"0 vente"), 1);
+  } else { set("s-strat","aucun budget engagé",0); }
+</script>
+</body>
+</html>

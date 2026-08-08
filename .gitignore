@@ -1,0 +1,10 @@
+# Vercel
+.vercel
+
+# Exports locaux du carnet (données de vente, ne pas publier)
+stock-tees-*.csv
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store

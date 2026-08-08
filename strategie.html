@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E9E3D6">
+<title>Stratégie de lancement — Streetwear Ops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#E9E3D6;--card:#F4F0E7;--ink:#1B1714;--muted:#6E6658;--stamp:#D6371A;--green:#2E7A4C;
+    --line:rgba(27,23,20,.14);--line2:rgba(27,23,20,.28)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;line-height:1.5;
+    background-image:radial-gradient(rgba(27,23,20,.035) 1px,transparent 1px);background-size:22px 22px}
+  .wrap{max-width:820px;margin:0 auto;padding:20px 16px 90px}
+  .mono{font-family:"Space Mono",monospace}
+
+  .nav{display:flex;gap:6px;margin-bottom:14px}
+  .nav a{flex:1;text-align:center;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);
+    border:1.5px solid var(--line2);padding:9px 6px;white-space:nowrap}
+  .nav a:hover{border-color:var(--ink);color:var(--ink)}
+  .nav a.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+  @media (max-width:430px){.nav{gap:4px}.nav a{font-size:9px;letter-spacing:.02em;padding:8px 2px}}
+
+  header{border:2px solid var(--ink);background:var(--card);padding:18px 18px 16px}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  h1{font-weight:900;font-size:clamp(26px,7vw,42px);line-height:1;letter-spacing:-.02em;margin:6px 0 6px}
+  h1 .accent{color:var(--stamp)}
+  .sub{font-size:13.5px;color:var(--muted);max-width:56ch}
+  .principe{margin-top:14px;border-top:1px dashed var(--line2);padding-top:11px;
+    font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;line-height:1.6}
+  .principe b{color:var(--stamp);font-weight:700}
+
+  .panel{border:1.5px solid var(--ink);background:var(--card);margin-top:16px}
+  .ptitle{font-weight:700;font-size:15px;padding:12px 14px 0;display:flex;justify-content:space-between;
+    align-items:center;gap:8px;flex-wrap:wrap}
+  .ptitle small{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);font-weight:400;letter-spacing:.05em}
+  .body{padding:10px 14px 14px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+  label.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .cap{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  input{font-family:"Archivo",sans-serif;font-size:15px;padding:8px 9px;border:1.5px solid var(--ink);
+    background:#fff;color:var(--ink);border-radius:0;width:100%;min-width:0}
+  input:focus{outline:2px solid var(--stamp);outline-offset:-1px}
+
+  .lines{margin-top:12px;border-top:1px solid var(--line2);padding-top:9px}
+  .ln{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:14px}
+  .ln b{font-weight:700;white-space:nowrap;font-family:"Space Mono",monospace;font-size:13.5px}
+  .ln.neg b{color:var(--stamp)}
+  .ln.tot{border-top:1px solid var(--line2);margin-top:6px;padding-top:8px;font-weight:700}
+
+  .cpa{margin-top:12px;border:2px solid var(--ink);background:var(--paper);padding:13px 14px;text-align:center}
+  .cpa .l{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .cpa .v{font-weight:900;font-size:clamp(30px,9vw,46px);line-height:1.05;letter-spacing:-.02em;margin:3px 0}
+  .cpa .n{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);line-height:1.6}
+  .cpa .n b{color:var(--stamp)}
+
+  .wave{border:1.5px solid var(--ink);background:var(--card);margin-bottom:10px}
+  .wave .bar6{height:5px;background:var(--stamp)}
+  .wave[data-state="done"] .bar6{background:var(--green)}
+  .wave[data-state="idle"] .bar6{background:var(--line2)}
+  .wtop{display:flex;gap:11px;padding:11px 13px 3px;align-items:flex-start}
+  .wnum{font-weight:900;font-size:30px;line-height:.85;opacity:.17;letter-spacing:-.03em;flex:none}
+  .whead{flex:1;min-width:0}
+  .wname{font-weight:700;font-size:15.5px;line-height:1.15}
+  .wmeta{font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);margin-top:3px}
+  .wbud{font-family:"Space Mono",monospace;font-weight:700;font-size:13px;white-space:nowrap;
+    border:1.5px solid var(--ink);padding:3px 8px;flex:none}
+  .wobj{padding:5px 13px 0;font-size:13.5px}
+  .wobj span{color:var(--muted)}
+  .wdata{padding:5px 13px 0;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);line-height:1.6}
+  .wchecks{display:flex;gap:16px;flex-wrap:wrap;padding:9px 13px 12px;margin-top:6px;border-top:1px solid var(--line)}
+  .chk{display:flex;gap:7px;align-items:center;cursor:pointer;font-family:"Space Mono",monospace;
+    font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+  .chk input{appearance:none;-webkit-appearance:none;flex:none;width:18px;height:18px;border:1.5px solid var(--ink);
+    background:var(--card);cursor:pointer;position:relative;padding:0}
+  .chk input:checked{background:var(--stamp);border-color:var(--stamp)}
+  .chk input:checked::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  .chk.d input:checked{background:var(--green);border-color:var(--green)}
+  .chk input:checked ~ span{color:var(--ink)}
+
+  .budbar{border:1.5px solid var(--ink);background:var(--card);padding:11px 13px;margin-bottom:12px}
+  .budbar .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .budbar .lbl{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .budbar .pct{font-weight:900;font-size:17px}
+  .bar{height:12px;background:rgba(27,23,20,.1);margin-top:8px;overflow:hidden}
+  .bar>i{display:block;height:100%;width:0;background:var(--stamp);transition:width .35s ease}
+  .bar>i.full{background:var(--green)}
+
+  .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+  table{border-collapse:collapse;width:100%;min-width:560px}
+  th{font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;text-align:right;padding:0 5px 7px;white-space:nowrap;vertical-align:bottom}
+  th.l{text-align:left}
+  td{border-top:1px solid var(--line);padding:5px;text-align:right;font-family:"Space Mono",monospace;
+    font-size:12.5px;font-weight:700;white-space:nowrap}
+  td.l{text-align:left;font-family:"Archivo",sans-serif;font-size:13.5px;font-weight:500;white-space:normal;min-width:130px}
+  td input{padding:6px 7px;font-size:13.5px;text-align:right;font-family:"Space Mono",monospace}
+  td input.lab{text-align:left;font-family:"Archivo",sans-serif;font-weight:500}
+  tr.ok td{background:rgba(46,122,76,.11)}
+  tr.bad td{background:rgba(214,55,26,.11)}
+  tr.tot td{border-top:2px solid var(--ink);font-weight:700;font-size:13.5px;background:rgba(27,23,20,.05)}
+  td .del{border:none;background:none;color:var(--muted);cursor:pointer;font-size:15px;padding:2px 5px;font-family:"Space Mono",monospace}
+  td .del:hover{color:var(--stamp)}
+  .thint{font-family:"Space Mono",monospace;font-size:10.5px;color:var(--muted);margin-top:9px;line-height:1.6}
+  .dot{display:inline-block;width:9px;height:9px;border:1px solid var(--line2);vertical-align:-1px;margin-right:3px}
+  .dot.g{background:rgba(46,122,76,.4)} .dot.n{background:transparent} .dot.r{background:rgba(214,55,26,.4)}
+
+  .verdict{border:2px solid var(--ink);background:var(--card);padding:16px 15px;text-align:center;margin-top:16px}
+  .verdict .l{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .verdict .cpav{font-family:"Space Mono",monospace;font-weight:700;font-size:14px;margin-top:6px}
+  .verdict .v{font-weight:900;font-size:clamp(20px,5.6vw,30px);line-height:1.12;letter-spacing:-.01em;margin:7px 0 4px}
+  .verdict .v.g{color:var(--green)} .verdict .v.r{color:var(--stamp)} .verdict .v.w{color:var(--muted)}
+  .verdict .n{font-size:13px;color:var(--muted);max-width:46ch;margin:0 auto}
+  .scale{display:flex;gap:4px;margin-top:13px}
+  .scale div{flex:1;border:1px solid var(--line2);padding:6px 3px;font-family:"Space Mono",monospace;
+    font-size:9px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);line-height:1.5}
+  .scale div.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+
+  .stop li,.regle li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+  .stop li:first-child,.regle li:first-child{border-top:none}
+  ul{list-style:none}
+  .stop .mk{font-family:"Space Mono",monospace;font-weight:700;color:var(--stamp);flex:none;font-size:13px}
+  .regle .mk{font-family:"Space Mono",monospace;font-weight:700;color:var(--muted);flex:none;font-size:13px}
+  .stop{border-color:var(--stamp)}
+  .stop .ptitle{color:var(--stamp)}
+
+  button{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+    border:1.5px solid var(--ink);background:var(--ink);color:var(--card);padding:10px 14px;cursor:pointer}
+  button:hover{background:var(--stamp);border-color:var(--stamp)}
+  button.ghost{background:none;color:var(--ink)} button.ghost:hover{background:var(--ink);color:var(--card)}
+  button.sm{padding:6px 10px;font-size:11px}
+  footer{margin-top:26px;text-align:center;font-family:"Space Mono",monospace;font-size:11px;color:var(--muted);letter-spacing:.05em;line-height:1.8}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line2)}
+  footer a:hover{color:var(--stamp);border-color:var(--stamp)}
+  footer .acts{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="nav">
+  <a href="roadmap.html">Feuille de route</a>
+  <a href="carnet.html">Carnet de stock</a>
+  <a href="strategie.html" class="on">Stratégie</a>
+</nav>
+
+<header>
+  <div class="eyebrow">Ops · Antananarivo · Budget pub 100 000 Ar</div>
+  <h1>Stratégie de <span class="accent">lancement</span></h1>
+  <p class="sub">Quatre vagues, un plafond, une décision. Le budget n'est pas là pour faire du chiffre : il est là pour te dire si le modèle tient.</p>
+  <div class="principe">
+    <span>Principe directeur — ce budget achète de <b>l'information</b>, pas des ventes.</span>
+  </div>
+</header>
+
+<div class="panel">
+  <div class="ptitle">Économie unitaire <small>d'où sort ton plafond</small></div>
+  <div class="body">
+    <div class="grid">
+      <label class="f"><span class="cap">Nb TOP</span><input id="e-ntop" type="number" inputmode="numeric" value="50" min="0"></label>
+      <label class="f"><span class="cap">Nb MID</span><input id="e-nmid" type="number" inputmode="numeric" value="50" min="0"></label>
+      <label class="f"><span class="cap">Prix TOP (Ar)</span><input id="e-ptop" type="number" inputmode="numeric" value="35000" min="0"></label>
+      <label class="f"><span class="cap">Prix MID (Ar)</span><input id="e-pmid" type="number" inputmode="numeric" value="20000" min="0"></label>
+      <label class="f"><span class="cap">Coût unit. (Ar)</span><input id="e-cost" type="number" inputmode="numeric" value="12500" min="0"></label>
+      <label class="f"><span class="cap">Commission (%)</span><input id="e-comm" type="number" inputmode="numeric" value="15" min="0"></label>
+      <label class="f"><span class="cap">Fixe / live (Ar)</span><input id="e-fixe" type="number" inputmode="numeric" value="50000" min="0"></label>
+      <label class="f"><span class="cap">Nb de lives</span><input id="e-lives" type="number" inputmode="numeric" value="3" min="0"></label>
+      <label class="f"><span class="cap">Livraison / cde (Ar)</span><input id="e-liv" type="number" inputmode="numeric" value="2000" min="0"></label>
+    </div>
+
+    <div class="lines">
+      <div class="ln"><span>Chiffre d'affaires</span><b id="r-ca">—</b></div>
+      <div class="ln neg"><span>Coût produit</span><b id="r-cout">—</b></div>
+      <div class="ln neg"><span>Commission animateur</span><b id="r-comm">—</b></div>
+      <div class="ln neg"><span>Fixe animateur</span><b id="r-fixe">—</b></div>
+      <div class="ln neg"><span>Livraison</span><b id="r-liv">—</b></div>
+      <div class="ln tot"><span>Disponible avant pub</span><b id="r-dispo">—</b></div>
+    </div>
+
+    <div class="cpa">
+      <div class="l">Plafond de CPA calculé</div>
+      <div class="v" id="r-cpa">—</div>
+      <div class="n" id="r-cpanote">disponible avant pub ÷ nombre de ventes</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="ptitle">Les 4 vagues <small>100 000 Ar plafond</small></div>
+  <div class="body">
+
+    <div class="budbar">
+      <div class="top">
+        <span class="lbl">Budget engagé</span>
+        <span class="pct"><span id="b-pct">0</span>% · <span id="b-txt" class="mono" style="font-size:12px;font-weight:400;color:var(--muted)"></span></span>
+      </div>
+      <div class="bar"><i id="b-fill"></i></div>
+    </div>
+
+    <div class="wave" id="w0" data-bud="0">
+      <div class="bar6"></div>
+      <div class="wtop">
+        <div class="wnum">00</div>
+        <div class="whead">
+          <div class="wname">Organique pur</div>
+          <div class="wmeta">Live du 9 août</div>
+        </div>
+        <div class="wbud">0 Ar</div>
+      </div>
+      <div class="wobj">Objectif : <span>prouver que ça vend sans payer un ariary.</span></div>
+      <div class="wdata">À collecter — nb de commentaires, nb de conversations, nb de ventes, taux de closing, prix qui tient.</div>
+      <div class="wchecks">
+        <label class="chk"><input type="checkbox" data-w="w0" data-k="l"><span>lancée</span></label>
+        <label class="chk d"><input type="checkbox" data-w="w0" data-k="d"><span>terminée</span></label>
+      </div>
+    </div>
+
+    <div class="wave" id="w1" data-bud="30000">
+      <div class="bar6"></div>
+      <div class="wtop">
+        <div class="wnum">01</div>
+        <div class="whead">
+          <div class="wname">Test d'angles</div>
+          <div class="wmeta">12 → 14 août · 3 créas × 10 000 Ar</div>
+        </div>
+        <div class="wbud">30 000 Ar</div>
+      </div>
+      <div class="wobj">Objectif : <span>trouver l'angle qui parle — qualité, style, prix.</span></div>
+      <div class="wdata">À collecter — coût par conversation de chaque angle, angle gagnant, créa refusée ou non.</div>
+      <div class="wchecks">
+        <label class="chk"><input type="checkbox" data-w="w1" data-k="l"><span>lancée</span></label>
+        <label class="chk d"><input type="checkbox" data-w="w1" data-k="d"><span>terminée</span></label>
+      </div>
+    </div>
+
+    <div class="wave" id="w2" data-bud="25000">
+      <div class="bar6"></div>
+      <div class="wtop">
+        <div class="wnum">02</div>
+        <div class="whead">
+          <div class="wname">Remplissage du Live 2</div>
+          <div class="wmeta">avant le 17 août</div>
+        </div>
+        <div class="wbud">25 000 Ar</div>
+      </div>
+      <div class="wobj">Objectif : <span>faire venir du monde sur le live, pas vendre en direct.</span></div>
+      <div class="wdata">À collecter — audience du live 2 vs live 1, ventes pendant le live, CPA réel.</div>
+      <div class="wchecks">
+        <label class="chk"><input type="checkbox" data-w="w2" data-k="l"><span>lancée</span></label>
+        <label class="chk d"><input type="checkbox" data-w="w2" data-k="d"><span>terminée</span></label>
+      </div>
+    </div>
+
+    <div class="wave" id="w3" data-bud="25000">
+      <div class="bar6"></div>
+      <div class="wtop">
+        <div class="wnum">03</div>
+        <div class="whead">
+          <div class="wname">Scale du gagnant</div>
+          <div class="wmeta">20 → 24 août</div>
+        </div>
+        <div class="wbud">25 000 Ar</div>
+      </div>
+      <div class="wobj">Objectif : <span>remettre du budget sur le seul angle qui a tenu, sur le TOP uniquement.</span></div>
+      <div class="wdata">À collecter — le CPA tient-il quand le budget monte, ou se dégrade-t-il.</div>
+      <div class="wchecks">
+        <label class="chk"><input type="checkbox" data-w="w3" data-k="l"><span>lancée</span></label>
+        <label class="chk d"><input type="checkbox" data-w="w3" data-k="d"><span>terminée</span></label>
+      </div>
+    </div>
+
+    <div class="wave" id="w4" data-bud="20000">
+      <div class="bar6"></div>
+      <div class="wtop">
+        <div class="wnum">04</div>
+        <div class="whead">
+          <div class="wname">Réserve conditionnelle</div>
+          <div class="wmeta">uniquement si CPA &lt; 3 000 Ar</div>
+        </div>
+        <div class="wbud">20 000 Ar</div>
+      </div>
+      <div class="wobj">Objectif : <span>ne se débloque pas par envie — seulement si les chiffres l'autorisent.</span></div>
+      <div class="wdata" id="w4-gate">Condition — CPA consolidé sous 3 000 Ar.</div>
+      <div class="wchecks">
+        <label class="chk"><input type="checkbox" data-w="w4" data-k="l"><span>lancée</span></label>
+        <label class="chk d"><input type="checkbox" data-w="w4" data-k="d"><span>terminée</span></label>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="panel">
+  <div class="ptitle">Tableau de bord <small>une ligne par créa</small></div>
+  <div class="body">
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="l">Vague / créa</th>
+            <th>Dépensé</th><th>Convers.</th><th>Ventes</th>
+            <th>Coût/conv</th><th>CPA réel</th><th>Closing</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:11px"><button class="ghost sm" onclick="addRow()">+ Ajouter une ligne</button></div>
+    <div class="thint">
+      <span class="dot g"></span>coût/conversation sous 2 000 Ar &nbsp;
+      <span class="dot n"></span>entre 2 000 et 3 000 &nbsp;
+      <span class="dot r"></span>au-dessus de 3 000 Ar — signal d'arrêt
+    </div>
+  </div>
+</div>
+
+<div class="verdict">
+  <div class="l">Verdict</div>
+  <div class="cpav" id="v-cpa">—</div>
+  <div class="v w" id="v-txt">En attente de données</div>
+  <div class="n" id="v-note">Saisis au moins une ligne dépensée avec ses ventes pour obtenir un verdict.</div>
+  <div class="scale">
+    <div id="sc-0">&lt; 2 000<br>excellent</div>
+    <div id="sc-1">2 000 – 3 500<br>correct</div>
+    <div id="sc-2">3 500 – 6 000<br>limite</div>
+    <div id="sc-3">&gt; 6 000<br>non viable</div>
+  </div>
+</div>
+
+<div class="panel stop">
+  <div class="ptitle">Signaux d'arrêt <small>immédiat, sans discuter</small></div>
+  <div class="body">
+    <ul>
+      <li><span class="mk">01</span><span>Coût par conversation au-dessus de <b>3 000 Ar</b> — la créa ne parle pas, on coupe.</span></li>
+      <li><span class="mk">02</span><span>Un live avec pub qui fait <b>moins ou autant</b> qu'un live sans pub — la pub n'apporte rien.</span></li>
+      <li><span class="mk">03</span><span>CPA au-dessus de <b>6 000 Ar</b> — la marge est mangée, on arrête tout budget.</span></li>
+      <li><span class="mk">04</span><span>Créa refusée par Meta — vérifier immédiatement qu'aucun <b>nom de marque</b> n'est visible sur le visuel.</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="panel regle">
+  <div class="ptitle">Règles non négociables</div>
+  <div class="body">
+    <ul>
+      <li><span class="mk">1.</span><span>Zéro nom de marque en créa payante. On vend de la qualité premium, pas un logo.</span></li>
+      <li><span class="mk">2.</span><span>Objectif Messages uniquement. On achète des conversations, pas des vues.</span></li>
+      <li><span class="mk">3.</span><span>Ne booster que ce qui performe déjà en organique. La pub amplifie, elle ne sauve pas.</span></li>
+      <li><span class="mk">4.</span><span>Une variable à la fois. Sinon tu ne sauras jamais ce qui a marché.</span></li>
+      <li><span class="mk">5.</span><span>Le budget ne se rallonge pas en cours de route. 100 000 Ar, point.</span></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  Données enregistrées sur cet appareil · pense à exporter régulièrement
+  <br><a href="index.html">accueil</a>
+  <div class="acts">
+    <button class="ghost sm" onclick="exportCSV()">Exporter CSV</button>
+    <button class="ghost sm" onclick="resetAll()">Réinitialiser</button>
+  </div>
+</footer>
+
+</div>
+
+<script>
+var KEY="swops.strategie.v1";
+var PLAFOND=100000, CPA_MAX=6000;
+var ECO=["ntop","nmid","ptop","pmid","cost","comm","fixe","lives","liv"];
+var WAVES=["w0","w1","w2","w3","w4"];
+var S={eco:{},waves:{},rows:null};
+
+var DEFAULT_ROWS=[
+  {label:"V1 · Angle qualité",spent:0,conv:0,sales:0},
+  {label:"V1 · Angle style",spent:0,conv:0,sales:0},
+  {label:"V1 · Angle prix",spent:0,conv:0,sales:0},
+  {label:"V2 · Remplissage Live 2",spent:0,conv:0,sales:0},
+  {label:"V3 · Scale gagnant",spent:0,conv:0,sales:0},
+  {label:"Réserve",spent:0,conv:0,sales:0}
+];
+
+function fmt(n){return Math.round(n).toLocaleString('fr-FR').replace(/\u202f|\u00a0/g,' ')}
+function ar(n){return fmt(n)+" Ar"}
+function num(id){return parseInt(document.getElementById(id).value,10)||0}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+function load(){
+  var raw=null;
+  try{raw=JSON.parse(localStorage.getItem(KEY))}catch(e){raw=null}
+  if(!raw||typeof raw!=="object")raw={};
+  S.eco=raw.eco&&typeof raw.eco==="object"?raw.eco:{};
+  S.waves=raw.waves&&typeof raw.waves==="object"?raw.waves:{};
+  S.rows=Object.prototype.toString.call(raw.rows)==="[object Array]"?raw.rows:null;
+  if(!S.rows){
+    S.rows=DEFAULT_ROWS.map(function(r){
+      return {id:uid(),label:r.label,spent:r.spent,conv:r.conv,sales:r.sales}});
+  }
+  S.rows.forEach(function(r){if(!r.id)r.id=uid()});
+
+  ECO.forEach(function(k){
+    var el=document.getElementById("e-"+k);
+    if(typeof S.eco[k]==="number"&&isFinite(S.eco[k]))el.value=S.eco[k];
+  });
+  WAVES.forEach(function(w){
+    var st=S.waves[w]||{};
+    document.querySelector('input[data-w="'+w+'"][data-k="l"]').checked=!!st.l;
+    document.querySelector('input[data-w="'+w+'"][data-k="d"]').checked=!!st.d;
+  });
+}
+
+function save(){
+  ECO.forEach(function(k){S.eco[k]=num("e-"+k)});
+  WAVES.forEach(function(w){
+    S.waves[w]={
+      l:document.querySelector('input[data-w="'+w+'"][data-k="l"]').checked?1:0,
+      d:document.querySelector('input[data-w="'+w+'"][data-k="d"]').checked?1:0};
+  });
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+}
+
+/* ---------- Bloc 2 : économie unitaire ---------- */
+function eco(){
+  var ntop=num("e-ntop"), nmid=num("e-nmid");
+  var ventes=ntop+nmid;
+  var ca=ntop*num("e-ptop")+nmid*num("e-pmid");
+  var cout=ventes*num("e-cost");
+  var comm=Math.round(ca*num("e-comm")/100);
+  var fixe=num("e-fixe")*num("e-lives");
+  var liv=ventes*num("e-liv");
+  var dispo=ca-cout-comm-fixe-liv;
+  var cpa=ventes?dispo/ventes:0;
+
+  document.getElementById("r-ca").textContent=ar(ca);
+  document.getElementById("r-cout").textContent="− "+ar(cout);
+  document.getElementById("r-comm").textContent="− "+ar(comm);
+  document.getElementById("r-fixe").textContent="− "+ar(fixe);
+  document.getElementById("r-liv").textContent="− "+ar(liv);
+  document.getElementById("r-dispo").textContent=ar(dispo);
+
+  var v=document.getElementById("r-cpa");
+  var note=document.getElementById("r-cpanote");
+  if(!ventes||dispo<=0){
+    v.textContent="—"; v.style.color="var(--stamp)";
+    note.innerHTML=dispo<=0&&ventes?"<b>Aucune marge disponible pour la pub à ces paramètres.</b>":"renseigne au moins une quantité";
+  }else{
+    v.textContent=ar(cpa);
+    v.style.color=cpa>=CPA_MAX?"var(--green)":"var(--stamp)";
+    var retenu=Math.min(cpa,CPA_MAX);
+    note.innerHTML="sur "+ventes+" ventes · plafond opérationnel retenu <b>"+ar(retenu)+"</b><br>cible de pilotage 2 500 – 3 500 Ar";
+  }
+  return {ventes:ventes,dispo:dispo,cpa:cpa};
+}
+
+/* ---------- Bloc 3 : vagues ---------- */
+function waves(){
+  var engage=0;
+  WAVES.forEach(function(w){
+    var el=document.getElementById(w);
+    var bud=parseInt(el.dataset.bud,10)||0;
+    var l=document.querySelector('input[data-w="'+w+'"][data-k="l"]').checked;
+    var d=document.querySelector('input[data-w="'+w+'"][data-k="d"]').checked;
+    el.dataset.state=d?"done":(l?"live":"idle");
+    if(l)engage+=bud;
+  });
+  var pct=Math.min(100,Math.round(engage/PLAFOND*100));
+  document.getElementById("b-pct").textContent=pct;
+  document.getElementById("b-txt").textContent=fmt(engage)+" / "+fmt(PLAFOND)+" Ar";
+  var f=document.getElementById("b-fill");
+  f.style.width=pct+"%";
+  f.className=engage>=PLAFOND?"full":"";
+}
+
+/* ---------- Bloc 4 : tableau de bord ---------- */
+function rowsRender(){
+  var tb=document.getElementById("tb"), h="";
+  var tS=0,tC=0,tV=0;
+
+  S.rows.forEach(function(r,i){
+    var spent=r.spent||0, conv=r.conv||0, sales=r.sales||0;
+    tS+=spent; tC+=conv; tV+=sales;
+    var cpc=conv?spent/conv:null;
+    var cpa=sales?spent/sales:null;
+    var clo=conv?sales/conv*100:null;
+    var cls="";
+    if(cpc!==null&&spent>0)cls=cpc<2000?"ok":(cpc>3000?"bad":"");
+    h+='<tr class="'+cls+'">'+
+      '<td class="l"><input class="lab" data-i="'+i+'" data-f="label" value="'+esc(r.label)+'"></td>'+
+      '<td><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="spent" value="'+spent+'"></td>'+
+      '<td><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="conv" value="'+conv+'"></td>'+
+      '<td><input type="number" inputmode="numeric" min="0" data-i="'+i+'" data-f="sales" value="'+sales+'"></td>'+
+      '<td>'+(cpc===null?"—":fmt(cpc))+'</td>'+
+      '<td>'+(cpa===null?"—":fmt(cpa))+'</td>'+
+      '<td>'+(clo===null?"—":Math.round(clo)+"%")+'</td>'+
+      '<td><button class="del" data-del="'+i+'" title="supprimer">×</button></td></tr>';
+  });
+
+  var TC=tC?tS/tC:null, TA=tV?tS/tV:null, TL=tC?tV/tC*100:null;
+  h+='<tr class="tot"><td class="l">TOTAL</td>'+
+    '<td>'+fmt(tS)+'</td><td>'+tC+'</td><td>'+tV+'</td>'+
+    '<td>'+(TC===null?"—":fmt(TC))+'</td>'+
+    '<td>'+(TA===null?"—":fmt(TA))+'</td>'+
+    '<td>'+(TL===null?"—":Math.round(TL)+"%")+'</td><td></td></tr>';
+  tb.innerHTML=h;
+
+  return {spent:tS,conv:tC,sales:tV,cpa:TA};
+}
+
+function addRow(){
+  S.rows.push({id:uid(),label:"Nouvelle ligne",spent:0,conv:0,sales:0});
+  save();render();
+}
+function delRow(i){
+  if(!confirm("Supprimer cette ligne ?"))return;
+  S.rows.splice(i,1);save();render();
+}
+
+/* ---------- Bloc 5 : verdict ---------- */
+function verdict(t){
+  var el=document.getElementById("v-txt"), note=document.getElementById("v-note");
+  var cpaEl=document.getElementById("v-cpa");
+  var idx=-1;
+
+  if(!t.spent){
+    cpaEl.textContent="—";
+    el.textContent="En attente de données"; el.className="v w";
+    note.textContent="Saisis au moins une ligne dépensée avec ses ventes pour obtenir un verdict.";
+  }else if(!t.sales){
+    cpaEl.textContent=fmt(t.spent)+" Ar dépensés · 0 vente";
+    el.textContent="Non viable — aucune vente"; el.className="v r";
+    note.textContent="Du budget est parti sans une seule vente attribuée. Coupe et reprends en organique.";
+    idx=3;
+  }else{
+    var c=t.cpa;
+    cpaEl.textContent="CPA consolidé · "+ar(c)+" sur "+t.sales+" vente"+(t.sales>1?"s":"");
+    if(c<2000){idx=0;el.textContent="Excellent — volume envisageable par paliers";el.className="v g";
+      note.textContent="Le coût d'acquisition laisse de la marge. Monter en volume reste conditionné au débit réel, jamais au FOMO.";}
+    else if(c<3500){idx=1;el.textContent="Correct — volume prudent, TOP uniquement";el.className="v";
+      note.textContent="Ça tient, mais sans confort. Le MID ne supporte pas la pub : n'y mets pas un ariary.";}
+    else if(c<CPA_MAX){idx=2;el.textContent="Limite — pas de volume, rester en organique";el.className="v r";
+      note.textContent="La pub ne s'auto-finance quasiment plus. Continue à vendre, mais sans budget payant.";}
+    else{idx=3;el.textContent="Non viable — refuser le volume";el.className="v r";
+      note.textContent="Au-dessus de "+ar(CPA_MAX)+", chaque vente payée détruit ta marge. On arrête le budget.";}
+  }
+
+  for(var i=0;i<4;i++)document.getElementById("sc-"+i).className=(i===idx?"on":"");
+
+  var g=document.getElementById("w4-gate");
+  if(t.sales&&t.cpa<3000){
+    g.innerHTML="Condition <b style=\"color:var(--green)\">REMPLIE</b> — CPA consolidé à "+ar(t.cpa)+", sous 3 000 Ar.";
+  }else if(t.sales){
+    g.innerHTML="Condition <b style=\"color:var(--stamp)\">NON REMPLIE</b> — CPA consolidé à "+ar(t.cpa)+", au-dessus de 3 000 Ar.";
+  }else{
+    g.textContent="Condition — CPA consolidé sous 3 000 Ar.";
+  }
+}
+
+/* ---------- rendu global ---------- */
+function render(){
+  eco();
+  waves();
+  verdict(rowsRender());
+}
+
+/* ---------- export / reset ---------- */
+function exportCSV(){
+  var rows=[["ligne","depense_ar","conversations","ventes","cout_par_conversation","cpa_reel","closing_pct"]];
+  var tS=0,tC=0,tV=0;
+  S.rows.forEach(function(r){
+    var s=r.spent||0,c=r.conv||0,v=r.sales||0;
+    tS+=s;tC+=c;tV+=v;
+    rows.push([r.label,s,c,v,c?Math.round(s/c):"",v?Math.round(s/v):"",c?Math.round(v/c*100):""]);
+  });
+  rows.push(["TOTAL",tS,tC,tV,tC?Math.round(tS/tC):"",tV?Math.round(tS/tV):"",tC?Math.round(tV/tC*100):""]);
+  var csv=rows.map(function(r){
+    return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"'}).join(",")}).join("\n");
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));
+  a.download="strategie-pub-"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+
+function resetAll(){
+  if(!confirm("Réinitialiser la stratégie ? Exporte d'abord si besoin."))return;
+  try{localStorage.removeItem(KEY)}catch(e){}
+  S={eco:{},waves:{},rows:null};
+  ECO.forEach(function(k){var d={ntop:50,nmid:50,ptop:35000,pmid:20000,cost:12500,comm:15,fixe:50000,lives:3,liv:2000};
+    document.getElementById("e-"+k).value=d[k];});
+  document.querySelectorAll('.wchecks input').forEach(function(b){b.checked=false});
+  S.rows=DEFAULT_ROWS.map(function(r){
+    return {id:uid(),label:r.label,spent:r.spent,conv:r.conv,sales:r.sales}});
+  save();render();
+}
+
+/* ---------- écouteurs ---------- */
+ECO.forEach(function(k){
+  document.getElementById("e-"+k).addEventListener("input",function(){save();render()});
+});
+document.querySelectorAll('.wchecks input').forEach(function(b){
+  b.addEventListener("change",function(){save();render()});
+});
+document.getElementById("tb").addEventListener("input",function(e){
+  var t=e.target, i=t.dataset.i, f=t.dataset.f;
+  if(i===undefined||!f)return;
+  var r=S.rows[parseInt(i,10)]; if(!r)return;
+  if(f==="label"){r.label=t.value;save();return;}
+  r[f]=Math.max(0,parseInt(t.value,10)||0);
+  save();
+  var tot=rowsRender();
+  verdict(tot);
+  var again=document.querySelector('#tb input[data-i="'+i+'"][data-f="'+f+'"]');
+  if(again){again.focus();
+    try{again.setSelectionRange(again.value.length,again.value.length)}catch(err){}}
+});
+document.getElementById("tb").addEventListener("click",function(e){
+  var d=e.target.dataset?e.target.dataset.del:null;
+  if(d!==null&&d!==undefined)delRow(parseInt(d,10));
+});
+
+load();render();
+</script>
+</body>
+</html>
