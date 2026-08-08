@@ -3,6 +3,7 @@
 
 # Exports locaux du carnet (données de vente, ne pas publier)
 stock-tees-*.csv
+strategie-pub-*.csv
 
 # OS
 Thumbs.db

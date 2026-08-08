@@ -40,10 +40,18 @@ Deployed on Vercel as a static site from `main`; every push redeploys. There is 
 
 **Plain ES5, no framework.** `var`, `function`, `[].slice.call(...)`, string-concatenated `innerHTML`, and inline `onclick="fn(id)"` attributes. New code should match this style rather than introducing modern syntax inconsistently.
 
-**localStorage is the entire persistence layer.** There is no backend.
+**`sync.js` is the one shared script**, and the only deliberate exception to the inline rule — sync logic must be byte-identical across four pages, so it is a file, not four copies. Each page loads `config.js` then `sync.js` after its own inline script. It works by patching `localStorage.setItem`/`removeItem` to detect writes to the three data keys, so **no page's own logic knows sync exists**. Keep it that way: a new tool page needs only the two script tags plus its key added to `KEYS` in `sync.js`.
+
+**localStorage is still the source of truth on each device**; Supabase only carries copies between devices.
 - `carnet.html` → key `swops.stock.v2`, holding the full `DATA` array of item objects.
 - `roadmap.html` → key `swops.roadmap.v1`, holding a `{taskKey: 1}` map of checked tasks.
 - `strategie.html` → key `swops.strategie.v1`, holding `{eco, waves, rows}` — calculator inputs, per-wave `{l, d}` flags, and dashboard rows.
+
+`sync.js` adds three of its own keys — `swops.sync.code` (the shared secret linking devices), `swops.sync.at` (server timestamp of the last successful sync), `swops.sync.dirty` (unpushed local changes). These are per-device and deliberately never synced.
+
+**Sync conflict rule:** whole-snapshot, last-writer-wins, *except* that a device with unpushed local changes never gets silently overwritten — it shows a banner and makes the user choose. A device holding data with no `swops.sync.at` counts as dirty, which protects data entered before sync was switched on. If you ever add per-item merging, that safety net is the thing not to lose.
+
+**Security model:** the Supabase `anon` key is public by design and ships in `config.js`. The `state` table has RLS enabled with **no policies**, so that key alone reads nothing. All access goes through the `pull_state`/`push_state` SECURITY DEFINER functions, which require a sync code of at least 12 characters. The generated codes are 24 characters. Never add an RLS policy that grants `anon` direct table access — that would expose every user's data to anyone holding the public key.
 
 Changing a key string silently orphans the user's existing data. If a data-shape change forces it, bump the version suffix deliberately and expect the reset — the footer warns users to export first for a reason.
 

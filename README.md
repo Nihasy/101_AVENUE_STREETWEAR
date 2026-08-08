@@ -27,8 +27,28 @@ Déployé sur Vercel depuis la branche `main` — chaque push met le site à jou
 
 ## Données
 
-Tout est stocké dans le `localStorage` du navigateur — **aucun serveur, aucune base de données**. Les données sont donc liées à un appareil et à un navigateur : elles ne se synchronisent pas entre le téléphone et l'ordinateur, et vider les données du site les efface définitivement.
+Chaque appareil garde ses données dans le `localStorage` du navigateur : le site fonctionne donc hors ligne, et reste utilisable si la synchro tombe.
 
 Clés utilisées : `swops.stock.v2` (carnet), `swops.roadmap.v1` (feuille de route) et `swops.strategie.v1` (stratégie).
 
-Penser à **exporter le CSV régulièrement** depuis le carnet. Les exports (`stock-tees-*.csv`) sont ignorés par git : ils contiennent des données de vente et n'ont pas à être publiés.
+Penser à **exporter les CSV régulièrement**. Les exports (`stock-tees-*.csv`, `strategie-pub-*.csv`) sont ignorés par git : ils contiennent des données de vente et n'ont pas à être publiés.
+
+## Synchronisation téléphone / ordinateur
+
+Optionnelle. Sans configuration, chaque appareil reste indépendant, exactement comme avant.
+
+**Mise en route :**
+
+1. Créer un projet sur [supabase.com](https://supabase.com) (gratuit, sans carte).
+2. SQL Editor > New query > coller `supabase-schema.sql` > Run.
+3. Settings > API : copier *Project URL* et la clé *anon*, les mettre dans `config.js`.
+4. Pousser sur GitHub — Vercel redéploie tout seul.
+5. Sur le premier appareil : bandeau *Synchro* > **Gérer** > copier le code affiché.
+6. Sur le second : **Gérer** > coller le code > **Relier cet appareil**.
+
+Ensuite tout est automatique : chaque modification part au bout d'une seconde et demie, et chaque appareil vérifie les nouveautés au chargement, au retour sur l'onglet, et toutes les 30 secondes.
+
+**Si les deux appareils ont changé chacun de leur côté** (typiquement l'un hors réseau), rien n'est écrasé en silence : un bandeau demande lequel garder.
+
+La clé *anon* est publique par nature — elle est visible dans le navigateur. La sécurité repose sur le **code de synchro** : la table est verrouillée et n'est accessible qu'à travers deux fonctions qui exigent ce code. Le traiter comme un mot de passe.
+

@@ -1,0 +1,19 @@
+/* Configuration de la synchronisation téléphone <-> ordinateur.
+ *
+ * Où trouver ces deux valeurs :
+ *   Supabase > ton projet > Settings > API
+ *     - "Project URL"            -> url
+ *     - "anon" / "public" key    -> key
+ *
+ * Remplace les deux lignes ci-dessous, puis pousse sur GitHub.
+ * Tant que ce n'est pas rempli, le site fonctionne exactement comme avant,
+ * en local sur chaque appareil, sans synchro.
+ *
+ * La clé "anon" est publique par nature : elle finit dans le navigateur et
+ * n'est pas un secret. C'est pour ça que la table est verrouillée et que
+ * tout passe par ton code de synchro (voir supabase-schema.sql).
+ */
+window.SWOPS_SUPABASE = {
+  url: "https://TON-PROJET.supabase.co",
+  key: "TA-CLE-ANON"
+};
