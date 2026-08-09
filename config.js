@@ -20,5 +20,5 @@
  */
 window.SWOPS_SUPABASE = {
   url: "https://fihbqdccxltlzmuawwuo.supabase.co",
-  key: "TA-CLE-ANON"
+  key: "sb_publishable_91zx7E86_gRDhmHHd8gcQA_q9h8ar_6"
 };
