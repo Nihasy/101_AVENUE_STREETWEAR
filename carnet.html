@@ -325,61 +325,33 @@ function onPickExisting(){
   if(!it)return;
   var lbl=document.getElementById('count-lbl'), old=lbl.textContent;
   lbl.textContent="envoi de la photo…";
-  var ancienne=it.photo;
   uploadPhoto(f,function(err,name){
     lbl.textContent=old;
     if(err){alert("Échec de l'envoi : "+err.message);return}
     it.photo=name;save();render();
-    // l'ancienne n'est effacée que si plus personne ne s'en sert
-    if(ancienne&&ancienne!==name&&!stillUsed(ancienne,null))deleteFile(ancienne);
   });
 }
 
 function zoom(el){ el.parentNode.classList.toggle('open'); }
 
-function syncCode(){
-  try{
-    if(window.SWOPS_SYNC&&window.SWOPS_SYNC.code)return window.SWOPS_SYNC.code()||"";
-    return localStorage.getItem("swops.sync.code")||"";
-  }catch(e){return ""}
-}
-
-/* Supprime le fichier du bucket. Aucune règle de suppression n'est ouverte à
-   la clé publique : on passe par une fonction protégée par le code de synchro,
-   comme pull_state / push_state. Un tiers ne peut donc rien effacer. */
-function deleteFile(name,cb){
-  cb=cb||function(){};
-  if(!photosOn()||!name){cb();return}
-  var code=syncCode();
-  if(code.length<12){cb(new Error("aucun code de synchro sur cet appareil"));return}
-  var c=sbCfg();
-  fetch(String(c.url).replace(/\/+$/,"")+"/rest/v1/rpc/delete_photo",{
-    method:"POST",
-    headers:{"Content-Type":"application/json","apikey":c.key,"Authorization":"Bearer "+c.key},
-    body:JSON.stringify({p_code:code,p_name:name})
-  }).then(function(r){
-    if(!r.ok)return r.text().then(function(t){throw new Error("HTTP "+r.status+" "+t.slice(0,120))});
-    return r.json();
-  }).then(function(){cb()}).catch(cb);
-}
-
-/* Le fichier n'est effacé que si plus aucun article ne s'en sert : une même
-   photo est partagée par tout un lot (tailles × quantité). */
+/* Une même photo est partagée par tout un lot (tailles × quantité). */
 function stillUsed(name,exceptId){
   return DATA.some(function(x){return x.id!==exceptId&&x.photo===name});
 }
 
+/* Détache la photo de l'article. Le fichier reste dans le bucket : Supabase
+   refuse toute suppression qui ne passe pas par son API Storage, et cette API
+   ne peut pas être protégée par le code de synchro. Ouvrir la suppression à la
+   clé publique laisserait n'importe qui effacer une photo dont l'adresse a
+   fuité — on préfère garder les fichiers. Suppression réelle : Supabase >
+   Storage > tees. */
 function photoOff(id){
   var it=DATA.filter(function(x){return x.id===id})[0];if(!it||!it.photo)return;
-  var name=it.photo, partagee=stillUsed(name,id);
-  if(!confirm(partagee
-      ? "Retirer la photo de cet article ?\n\nD'autres articles du même lot l'utilisent encore : le fichier est conservé."
-      : "Supprimer la photo de cet article ?\n\nLe fichier sera définitivement effacé de Supabase."))return;
+  if(!confirm("Retirer la photo de cet article ?\n\n"+
+    (stillUsed(it.photo,id)
+      ? "D'autres articles du même lot continueront de l'afficher."
+      : "Elle disparaît du carnet. Le fichier, lui, reste dans Supabase (Storage > tees) tant que tu ne l'y supprimes pas toi-même.")))return;
   it.photo=null;save();render();
-  if(partagee)return;
-  deleteFile(name,function(err){
-    if(err)alert("Photo retirée du carnet, mais le fichier n'a pas pu être effacé :\n"+err.message);
-  });
 }
 
 function pickedSizes(){

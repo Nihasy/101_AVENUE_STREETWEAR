@@ -37,7 +37,7 @@ Penser à **exporter les CSV régulièrement**. Les exports (`stock-tees-*.csv`,
 
 Optionnel. Dans le carnet, une photo peut être prise ou choisie au moment de l'ajout au stock, ou ajoutée ensuite via le bouton `photo` de chaque article. Un clic sur une vignette l'agrandit et propose **remplacer** ou **retirer**.
 
-« Retirer » supprime réellement le fichier, via une fonction protégée par le code de synchro — aucune règle de suppression n'est ouverte à la clé publique, un tiers ne peut donc rien effacer. Si la photo est partagée par d'autres articles du même lot, elle est seulement détachée et le fichier conservé.
+« Retirer » détache la photo de l'article ; le fichier reste dans le bucket. Supabase refuse toute suppression qui ne passe pas par son API Storage, et cette API ne peut pas être protégée par le code de synchro : l'ouvrir laisserait n'importe qui effacer une photo dont l'adresse a fuité. Pour supprimer réellement un fichier : Supabase > Storage > `tees` > sélectionner > Delete.
 
 **Mise en route :** SQL Editor > coller `supabase-photos.sql` > Run. Le nom du bucket est dans `config.js` (`bucket`) ; le mettre à `""` désactive complètement les photos.
 

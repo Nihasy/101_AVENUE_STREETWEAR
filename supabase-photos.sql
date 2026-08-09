@@ -52,39 +52,19 @@ from storage.buckets
 where id = 'tees';
 
 -- =====================================================================
--- Suppression protégée par le code de synchro
--- (rejouable : réexécuter tout ce fichier est sans risque)
+-- Pourquoi il n'y a pas de suppression ici
 -- =====================================================================
 --
--- Aucune policy DELETE n'est ouverte à la clé publique : un tiers ne peut
--- toujours pas effacer tes photos. La suppression passe par cette fonction,
--- qui exige le code de synchro, exactement comme pull_state / push_state.
-
-create or replace function public.delete_photo(p_code text, p_name text)
-returns boolean
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  n integer;
-begin
-  if p_code is null or length(p_code) < 12 then
-    raise exception 'code de synchro invalide';
-  end if;
-
-  -- on n'accepte que les noms produits par l'application
-  if p_name is null or p_name !~ '^[a-z0-9]{24}\.jpg$' then
-    raise exception 'nom de fichier invalide';
-  end if;
-
-  delete from storage.objects
-  where bucket_id = 'tees' and name = p_name;
-
-  get diagnostics n = row_count;
-  return n > 0;
-end;
-$$;
-
-revoke all on function public.delete_photo(text, text) from public, anon, authenticated;
-grant execute on function public.delete_photo(text, text) to anon, authenticated;
+-- Une fonction SQL supprimant de storage.objects a été essayée : Supabase la
+-- refuse, quel que soit son propriétaire.
+--
+--   "Direct deletion from storage tables is not allowed. Use the Storage API
+--    instead. This prevents accidental data loss from orphaned objects."
+--
+-- Les seules voies réelles seraient :
+--   - ouvrir une policy DELETE à la clé publique, ce qui permettrait à
+--     quiconque connaît le nom d'un fichier de l'effacer ; ou
+--   - une Edge Function détenant la clé secrète côté serveur.
+--
+-- En attendant, « retirer » détache la photo de l'article et le fichier reste
+-- dans le bucket. Pour l'effacer : Supabase > Storage > tees > Delete.
