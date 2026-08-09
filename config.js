@@ -20,5 +20,9 @@
  */
 window.SWOPS_SUPABASE = {
   url: "https://fihbqdccxltlzmuawwuo.supabase.co",
-  key: "sb_publishable_91zx7E86_gRDhmHHd8gcQA_q9h8ar_6"
+  key: "sb_publishable_91zx7E86_gRDhmHHd8gcQA_q9h8ar_6",
+
+  // Bucket des photos de t-shirts (voir supabase-photos.sql).
+  // Mettre "" pour désactiver complètement les photos.
+  bucket: "tees"
 };

@@ -40,7 +40,7 @@ Deployed on Vercel as a static site from `main`; every push redeploys. There is 
 
 **Plain ES5, no framework.** `var`, `function`, `[].slice.call(...)`, string-concatenated `innerHTML`, and inline `onclick="fn(id)"` attributes. New code should match this style rather than introducing modern syntax inconsistently.
 
-**`sync.js` is the one shared script**, and the only deliberate exception to the inline rule — sync logic must be byte-identical across four pages, so it is a file, not four copies. Each page loads `config.js` then `sync.js` after its own inline script. It works by patching `localStorage.setItem`/`removeItem` to detect writes to the three data keys, so **no page's own logic knows sync exists**. Keep it that way: a new tool page needs only the two script tags plus its key added to `KEYS` in `sync.js`.
+**`sync.js` is the one shared script**, and the only deliberate exception to the inline rule — sync logic must be byte-identical across four pages, so it is a file, not four copies. Every page loads `config.js` in `<head>` — before its own inline script, because `carnet.html` reads `bucket` at init to decide whether to show the photo UI — and `sync.js` last, after the inline script. It works by patching `localStorage.setItem`/`removeItem` to detect writes to the three data keys, so **no page's own logic knows sync exists**. Keep it that way: a new tool page needs only the two script tags plus its key added to `KEYS` in `sync.js`.
 
 **localStorage is still the source of truth on each device**; Supabase only carries copies between devices.
 - `carnet.html` → key `swops.stock.v2`, holding the full `DATA` array of item objects.
@@ -64,11 +64,17 @@ Changing a key string silently orphans the user's existing data. If a data-shape
 Item shape:
 ```js
 {id, brand, style, note, grade /* "TOP"|"MID" */, size, price, cost,
- sold, soldPrice, chan, date /* "YYYY-MM-DD" */}
+ sold, soldPrice, chan, date /* "YYYY-MM-DD" */, photo /* nom de fichier ou null */}
 ```
 `price` is the asking price and `cost` the unit purchase cost, both captured at add time; `soldPrice` is the real negotiated price entered at sale. Revenue and margin always use `soldPrice`/`cost` of sold items only, while the "récupération de la mise" bar measures revenue against the cost of *all* stock — that asymmetry is intentional.
 
 **Grade drives default price.** Selecting TOP/MID in the add form overwrites the price input (35000 / 20000). These numbers, along with the channel list `CH` and the size buttons, are hardcoded near their point of use.
+
+**Photos live outside the sync snapshot.** `carnet.html` uploads a compressed JPEG straight to the Supabase Storage bucket named in `config.js` (`bucket`), and stores only the **filename** on the item as `photo`. Never put image data in `localStorage` or in the synced state — 100 items with photos must stay under ~20 KB of JSON, otherwise every sale marked during a live would re-upload megabytes.
+
+The bucket is public-read *by URL only*: `supabase-photos.sql` deliberately creates **no SELECT policy**, so the listing API stays closed and photos cannot be enumerated. Filenames are 24 random characters (~124 bits) from `rndName()` — that unguessability is the actual protection, so never switch to sequential or item-id-derived names. There is no UPDATE or DELETE policy either, so replacing a photo uploads a new file and orphans the old one; that is intentional and cheap.
+
+Photos are per *model*, not per unit: one upload is attached to every item created by a single "Ajouter au stock" (sizes × qty). `PENDING` holds the uploaded filename between upload and add.
 
 **Escaping.** All user-supplied strings go through `esc()` before entering `innerHTML`. Any new field rendered into the list or breakdowns must do the same.
 

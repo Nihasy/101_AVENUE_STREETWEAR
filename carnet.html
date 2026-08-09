@@ -91,7 +91,23 @@
     .nav a{font-size:10.5px;letter-spacing:.03em;padding:7px 4px;white-space:normal;line-height:1.25}}
   footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line2)}
   footer a:hover{color:var(--stamp);border-color:var(--stamp)}
+
+  /* --- photos ------------------------------------------------------- */
+  input[type=file]{padding:7px 8px;font-family:"Space Mono",monospace;font-size:11.5px}
+  .pstate{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.04em;margin-top:6px;
+    display:flex;align-items:center;gap:9px;color:var(--muted)}
+  .pstate.err{color:var(--stamp)}
+  .pstate.ok{color:var(--green)}
+  .pstate img{width:46px;height:46px;object-fit:cover;border:1.5px solid var(--ink);flex:none}
+  .item .thumb{width:42px;height:42px;object-fit:cover;border:1.5px solid var(--ink);flex:none;
+    cursor:pointer;background:#fff}
+  .item .thumb.big{width:100%;height:auto;max-height:none;order:9}
+  .item .nophoto{font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.04em;
+    border:1.5px dashed var(--line2);color:var(--muted);background:none;padding:0;width:42px;height:42px;
+    flex:none;cursor:pointer;text-transform:none;line-height:1.1}
+  .item .nophoto:hover{border-color:var(--stamp);color:var(--stamp);background:none}
 </style>
+<script src="config.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -140,6 +156,11 @@
     <div class="row">
       <label class="f"><span class="cap">Note (couleur, détail…)</span><input id="a-note" placeholder="ex. noir, gros logo"></label>
     </div>
+    <div class="row" id="a-photo-row" style="display:none">
+      <label class="f"><span class="cap">Photo du modèle (optionnel)</span>
+        <input id="a-photo" type="file" accept="image/*" capture="environment"></label>
+    </div>
+    <div class="pstate" id="a-pstate" style="display:none"></div>
     <div style="margin-bottom:10px">
       <span class="cap">Tailles — clique pour en choisir plusieurs</span>
       <div class="sizes" id="a-sizes">
@@ -189,6 +210,9 @@
   </div>
 </div>
 
+<input type="file" id="x-photo" accept="image/*" capture="environment"
+       style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+
 <footer>
   Données enregistrées sur cet appareil · pense à exporter régulièrement
   <br><a href="index.html">accueil</a>
@@ -200,13 +224,110 @@
 </div>
 
 <script>
-var KEY="swops.stock.v2", DATA=[], FILTER="all";
+var KEY="swops.stock.v2", DATA=[], FILTER="all", PHOTOS_OK=false;
 var CH=["Live FB","Live TikTok","Messenger","Demi-gros","Direct"];
 
 function load(){try{DATA=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){DATA=[]}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(DATA))}catch(e){}}
 function fmt(n){return Math.round(n).toLocaleString('fr-FR').replace(/\u202f|\u00a0/g,' ')}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+/* ================= PHOTOS =================================================
+   Les photos ne transitent jamais par localStorage ni par la synchro : seul
+   le nom du fichier est stocké sur l'article. La synchro reste donc légère.
+   Nom tiré au sort (~124 bits) : une adresse ne se devine pas. */
+var PENDING=null;                       // photo envoyée, en attente d'ajout au stock
+
+function sbCfg(){return window.SWOPS_SUPABASE||{}}
+function photosOn(){
+  var c=sbCfg();
+  return !!(c.url&&c.key&&c.bucket&&c.url.indexOf("TON-PROJET")<0&&c.key.indexOf("TA-CLE")<0);
+}
+function photoUrl(name){
+  var c=sbCfg();
+  return String(c.url).replace(/\/+$/,"")+"/storage/v1/object/public/"+c.bucket+"/"+name;
+}
+function rndName(n){
+  var a="abcdefghijklmnopqrstuvwxyz0123456789",s="",i,buf=null;
+  try{if(window.crypto&&window.crypto.getRandomValues){buf=new Uint32Array(n);window.crypto.getRandomValues(buf)}}
+  catch(e){buf=null}
+  for(i=0;i<n;i++){var r=buf?buf[i]:Math.floor(Math.random()*4294967296);s+=a.charAt(r%a.length)}
+  return s;
+}
+
+/* Redimensionne et compresse dans le navigateur : une photo de téléphone de
+   3-4 Mo tombe autour de 80 Ko, sans différence visible sur un t-shirt. */
+function compress(file,cb){
+  var url=URL.createObjectURL(file), img=new Image();
+  img.onload=function(){
+    var max=1000,w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+    if(!w||!h){URL.revokeObjectURL(url);cb(new Error("image illisible"));return}
+    if(w>h&&w>max){h=Math.round(h*max/w);w=max}
+    else if(h>=w&&h>max){w=Math.round(w*max/h);h=max}
+    var cv=document.createElement("canvas");cv.width=w;cv.height=h;
+    cv.getContext("2d").drawImage(img,0,0,w,h);
+    URL.revokeObjectURL(url);
+    if(!cv.toBlob){cb(new Error("navigateur trop ancien"));return}
+    cv.toBlob(function(b){b?cb(null,b):cb(new Error("compression impossible"))},"image/jpeg",0.72);
+  };
+  img.onerror=function(){URL.revokeObjectURL(url);cb(new Error("fichier non reconnu"))};
+  img.src=url;
+}
+
+function uploadPhoto(file,cb){
+  if(!photosOn()){cb(new Error("photos non configurées"));return}
+  compress(file,function(err,blob){
+    if(err){cb(err);return}
+    var c=sbCfg(), name=rndName(24)+".jpg";
+    fetch(String(c.url).replace(/\/+$/,"")+"/storage/v1/object/"+c.bucket+"/"+name,{
+      method:"POST",
+      headers:{"apikey":c.key,"Authorization":"Bearer "+c.key,"Content-Type":"image/jpeg"},
+      body:blob
+    }).then(function(r){
+      if(!r.ok)return r.text().then(function(t){throw new Error("HTTP "+r.status+" "+t.slice(0,120))});
+      cb(null,name,blob.size);
+    }).catch(cb);
+  });
+}
+
+function pstate(el,txt,cls,name){
+  var e=document.getElementById(el);
+  e.style.display="flex";e.className="pstate"+(cls?" "+cls:"");
+  e.innerHTML=(name?'<img src="'+esc(photoUrl(name))+'" alt="">':'')+'<span>'+esc(txt)+'</span>';
+}
+
+function onPickPhoto(){
+  var f=document.getElementById('a-photo').files[0];
+  if(!f)return;
+  PENDING=null;
+  pstate('a-pstate',"compression et envoi…","");
+  uploadPhoto(f,function(err,name,size){
+    if(err){pstate('a-pstate',"échec : "+err.message,"err");return}
+    PENDING=name;
+    pstate('a-pstate',"photo prête · "+Math.round(size/1024)+" Ko","ok",name);
+  });
+}
+
+/* Ajoute ou remplace la photo d'un article déjà saisi */
+function photoFor(id){
+  var inp=document.getElementById('x-photo');
+  inp.dataset.id=id;inp.value="";inp.click();
+}
+function onPickExisting(){
+  var inp=document.getElementById('x-photo'), f=inp.files[0], id=inp.dataset.id;
+  if(!f||!id)return;
+  var it=DATA.filter(function(x){return x.id===id})[0];
+  if(!it)return;
+  var lbl=document.getElementById('count-lbl'), old=lbl.textContent;
+  lbl.textContent="envoi de la photo…";
+  uploadPhoto(f,function(err,name){
+    lbl.textContent=old;
+    if(err){alert("Échec de l'envoi : "+err.message);return}
+    it.photo=name;save();render();
+  });
+}
+
+function zoom(el){ el.classList.toggle('big'); }
 
 function pickedSizes(){
   return [].slice.call(document.querySelectorAll('#a-sizes .sz.on')).map(function(b){return b.dataset.s});
@@ -233,10 +354,14 @@ function addItems(){
     for(var i=0;i<qty;i++){
       DATA.push({id:Date.now()+"-"+Math.random().toString(36).slice(2,7),
         brand:brand,style:style,note:note,grade:grade,size:sz,
-        price:price,cost:cost,sold:false,soldPrice:null,chan:null,date:null});
+        price:price,cost:cost,sold:false,soldPrice:null,chan:null,date:null,
+        photo:PENDING||null});
     }
   });
   document.getElementById('a-note').value="";
+  PENDING=null;
+  var pf=document.getElementById('a-photo'); if(pf)pf.value="";
+  var ps=document.getElementById('a-pstate'); if(ps)ps.style.display="none";
   save();render();
 }
 
@@ -294,7 +419,12 @@ function render(){
           '<button class="sm" onclick="sell(\''+x.id+'\')">vendu</button>'+
           '<button class="ghost sm" onclick="del(\''+x.id+'\')">×</button>';
       var sub=[x.style, x.note].filter(Boolean).join(" · ");
-      return '<div class="item'+(x.sold?' sold':'')+'">'+
+      var pic="";
+      if(x.photo) pic='<img class="thumb" src="'+esc(photoUrl(x.photo))+'" alt="" loading="lazy" '+
+        'title="agrandir" onclick="zoom(this)">';
+      else if(PHOTOS_OK) pic='<button type="button" class="nophoto" title="ajouter une photo" '+
+        'onclick="photoFor(\''+x.id+'\')">photo</button>';
+      return '<div class="item'+(x.sold?' sold':'')+'">'+pic+
         '<span class="tag '+(x.grade==="TOP"?"top":"mid")+'">'+x.grade+'</span>'+
         '<span class="name">'+esc(x.brand)+(sub?'<em>'+esc(sub)+'</em>':'')+'</span>'+
         '<span class="meta">'+esc(x.size)+'</span>'+right+'</div>';
@@ -325,8 +455,9 @@ function breakdowns(sold){
 }
 
 function exportCSV(){
-  var rows=[["modele","coupe","note","gamme","taille","prix_affiche","cout","vendu","prix_vendu","canal","date"]];
-  DATA.forEach(function(x){rows.push([x.brand,x.style,x.note||"",x.grade,x.size,x.price,x.cost,x.sold?"oui":"non",x.soldPrice||"",x.chan||"",x.date||""])});
+  var rows=[["modele","coupe","note","gamme","taille","prix_affiche","cout","vendu","prix_vendu","canal","date","photo"]];
+  DATA.forEach(function(x){rows.push([x.brand,x.style,x.note||"",x.grade,x.size,x.price,x.cost,x.sold?"oui":"non",x.soldPrice||"",x.chan||"",x.date||"",
+    x.photo&&photosOn()?photoUrl(x.photo):""])});
   var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"'}).join(",")}).join("\n");
   var a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));
@@ -347,9 +478,17 @@ document.querySelectorAll('#filters .chip').forEach(function(b){
     b.classList.add('on');FILTER=b.dataset.f;render();});
 });
 
+/* Photos : l'interface n'apparaît que si le bucket est configuré.
+   Sans configuration, le carnet reste strictement identique à avant. */
+PHOTOS_OK=photosOn();
+if(PHOTOS_OK){
+  document.getElementById('a-photo-row').style.display="";
+  document.getElementById('a-photo').addEventListener('change',onPickPhoto);
+  document.getElementById('x-photo').addEventListener('change',onPickExisting);
+}
+
 load();render();refreshHint();
 </script>
-<script src="config.js"></script>
 <script src="sync.js"></script>
 </body>
 </html>
