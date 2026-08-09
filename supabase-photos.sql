@@ -50,3 +50,41 @@ create policy "tees depot"
 select id, public, file_size_limit, allowed_mime_types
 from storage.buckets
 where id = 'tees';
+
+-- =====================================================================
+-- Suppression protégée par le code de synchro
+-- (rejouable : réexécuter tout ce fichier est sans risque)
+-- =====================================================================
+--
+-- Aucune policy DELETE n'est ouverte à la clé publique : un tiers ne peut
+-- toujours pas effacer tes photos. La suppression passe par cette fonction,
+-- qui exige le code de synchro, exactement comme pull_state / push_state.
+
+create or replace function public.delete_photo(p_code text, p_name text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  n integer;
+begin
+  if p_code is null or length(p_code) < 12 then
+    raise exception 'code de synchro invalide';
+  end if;
+
+  -- on n'accepte que les noms produits par l'application
+  if p_name is null or p_name !~ '^[a-z0-9]{24}\.jpg$' then
+    raise exception 'nom de fichier invalide';
+  end if;
+
+  delete from storage.objects
+  where bucket_id = 'tees' and name = p_name;
+
+  get diagnostics n = row_count;
+  return n > 0;
+end;
+$$;
+
+revoke all on function public.delete_photo(text, text) from public, anon, authenticated;
+grant execute on function public.delete_photo(text, text) to anon, authenticated;
