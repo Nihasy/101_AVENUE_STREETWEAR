@@ -39,7 +39,7 @@ Optionnel. Dans le carnet, une photo peut être prise ou choisie au moment de l'
 
 **Mise en route :** SQL Editor > coller `supabase-photos.sql` > Run. Le nom du bucket est dans `config.js` (`bucket`) ; le mettre à `""` désactive complètement les photos.
 
-L'image est compressée dans le navigateur (~80 Ko) et envoyée au bucket ; **seul le nom du fichier est enregistré sur l'article**, donc la synchro reste légère.
+L'image est compressée dans le navigateur — côté long ramené à 1000 px, qualité JPEG 0,72, soit une vingtaine de Ko pour une photo de t-shirt ordinaire et ~230 Ko dans le pire cas — puis envoyée au bucket ; **seul le nom du fichier est enregistré sur l'article**, donc la synchro reste légère.
 
 Le bucket est lisible publiquement **par URL directe uniquement** : aucune règle de lecture n'est créée, donc le listage est fermé et les photos ne peuvent pas être énumérées. Les noms sont tirés au sort sur 24 caractères. Conséquence à connaître : qui obtient l'adresse exacte d'une photo peut l'ouvrir, logos compris — ne pas diffuser ces URL.
 

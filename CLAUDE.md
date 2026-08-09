@@ -70,7 +70,7 @@ Item shape:
 
 **Grade drives default price.** Selecting TOP/MID in the add form overwrites the price input (35000 / 20000). These numbers, along with the channel list `CH` and the size buttons, are hardcoded near their point of use.
 
-**Photos live outside the sync snapshot.** `carnet.html` uploads a compressed JPEG straight to the Supabase Storage bucket named in `config.js` (`bucket`), and stores only the **filename** on the item as `photo`. Never put image data in `localStorage` or in the synced state — 100 items with photos must stay under ~20 KB of JSON, otherwise every sale marked during a live would re-upload megabytes.
+**Photos live outside the sync snapshot.** `carnet.html` resizes the picked image to 1000 px on its long side at JPEG quality 0.72 (measured: ~17 KB for a plain-fabric shot, ~230 KB for worst-case noise, from a 3-4 MB phone original), uploads it straight to the Supabase Storage bucket named in `config.js` (`bucket`), and stores only the **filename** on the item as `photo`. Never put image data in `localStorage` or in the synced state — 100 items with photos must stay under ~20 KB of JSON, otherwise every sale marked during a live would re-upload megabytes.
 
 The bucket is public-read *by URL only*: `supabase-photos.sql` deliberately creates **no SELECT policy**, so the listing API stays closed and photos cannot be enumerated. Filenames are 24 random characters (~124 bits) from `rndName()` — that unguessability is the actual protection, so never switch to sequential or item-id-derived names. There is no UPDATE or DELETE policy either, so replacing a photo uploads a new file and orphans the old one; that is intentional and cheap.
 
