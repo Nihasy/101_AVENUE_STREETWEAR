@@ -12,11 +12,11 @@
  * La clé "anon" est publique par nature : elle finit dans le navigateur et
  * n'est pas un secret. C'est pour ça que la table est verrouillée et que
  * tout passe par ton code de synchro (voir supabase-schema.sql).
- */
  *
- * ATTENTION : ici on met UNIQUEMENT la clé "anon" / "public".
- * Jamais la clé "service_role" : elle contourne toutes les protections de la
- * base, et ce fichier est téléchargeable par n'importe qui depuis le site.
+ * ATTENTION : ici on met UNIQUEMENT la clé "anon" / "public"
+ * (ou "sb_publishable_..."). Jamais la clé "service_role" ni "sb_secret_..." :
+ * elles contournent toutes les protections de la base, et ce fichier est
+ * téléchargeable par n'importe qui depuis le site.
  */
 window.SWOPS_SUPABASE = {
   url: "https://fihbqdccxltlzmuawwuo.supabase.co",
